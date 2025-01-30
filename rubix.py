@@ -60,14 +60,26 @@ def nextSide(color):
         return white
 
 def D():
-    next = nextSide(front)
+    #Rotates yellow side
+    yellow[:] = [yellow[6], yellow[3], yellow[0], 
+             yellow[7], yellow[4], yellow[1], 
+             yellow[8], yellow[5], yellow[2]]
     
-    pass
+    #Rotates the bottom 3 pieces of each side
+    tempBlue = blue[:]
+    blue[6:9] = black[6:9]
+    black[6:9] = aqua[6:9]
+    aqua[6:9] = orange[6:9]
+    orange[6:9] = tempBlue[6:9]
 
 
 def whiteCross():
 
     pass
 
-printSide(blue)
+printSide(black)
+D()
+print("")
+printSide(black)
+
 
