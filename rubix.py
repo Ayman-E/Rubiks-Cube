@@ -31,6 +31,10 @@ orange = ['O','O','Bl','O','O','Bl','A','A','B']
 black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
 aqua = ['A','A','O','A','A','B','Bl','Bl','B']
 
+front = blue
+top = white
+bottom = yellow
+
 def setCube():
     temp = input("Blue Input: ")
 
@@ -41,8 +45,28 @@ def printSide(list):
     print(list[3] + " " + list[4] + " " + list[5])
     print(list[6] + " " + list[7] + " " + list[8])
 
+def nextSide(color):
+    if(color == blue):
+        return orange
+    elif (color == orange):
+        return aqua
+    elif (color == aqua):
+        return black
+    elif (color == black):
+        return blue
+    elif (color == white):
+        return yellow
+    else:
+        return white
+
+def D():
+    next = nextSide(front)
+    
+    pass
+
 
 def whiteCross():
+
     pass
 
 printSide(blue)
