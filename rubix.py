@@ -59,14 +59,19 @@ def nextSide(color):
     else:
         return white
 
+#Following functions are all Rubix cube moves, a png is provided to provide a visual
+
+#Clockwise turn of bottom side
 def D():
     #Rotates yellow side
     yellow[:] = [yellow[6], yellow[3], yellow[0], 
              yellow[7], yellow[4], yellow[1], 
              yellow[8], yellow[5], yellow[2]]
     
-    #Rotates the bottom 3 pieces of each side
+    #Makes a copy of the blue side
     tempBlue = blue[:]
+
+    #Rotates the bottom 3 pieces of each side
     blue[6:9] = black[6:9]
     black[6:9] = aqua[6:9]
     aqua[6:9] = orange[6:9]
