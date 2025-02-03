@@ -107,6 +107,16 @@ def D(bottom):
 
 #Clockwise turn of front face
 def F(front):
+    color = -1
+    if front == blue:
+        color = 0
+    elif front == orange:
+        color = 1
+    elif front == aqua:
+        color = 2
+    else:#black
+        color = 3
+
     #Rotates front side
     front[:] = [front[6], front[3], front[0], 
              front[7], front[4], front[1], 
@@ -118,19 +128,36 @@ def F(front):
     tempLeft = left[:]
 
     # Rotates the sides of the front
-    left[2:9:3] = yellow[0:3]
-    yellow[0:3] = right[0:7:3][::-1]
-    right[0:7:3] = white[6:9]
-    white[6:9] = tempLeft[8:1:-3]
+    if color == 0: #blue
+        left[2:9:3] = yellow[0:3]
+        yellow[0:3] = right[0:7:3][::-1]
+        right[0:7:3] = white[6:9]
+        white[6:9] = tempLeft[8:1:-3]
+    elif color == 1: #orange
+        left[2:9:3] = yellow[2:9:3]
+        yellow[2:9:3] = right[0:7:3][::-1]
+        right[0:7:3] = white[2:9:3]
+        white[2:9:3] = tempLeft[8:1:-3]
+    elif color == 2: #aqua
+        left[2:9:3] = yellow[0:3][::-1]
+        yellow[6:9] = right[0:7:3]
+        right[0:7:3] = white[6:9][::-1]
+        white[0:3] = tempLeft[8:1:-3][::-1]
+    else:#black
+        left[2:9:3] = yellow[0:7:3]
+        yellow[0:7:3] = right[0:7:3]
+        right[0:7:3] = white[0:7:3]
+        white[0:7:3] = tempLeft[8:1:-3]
+    
 
 
 def whiteCross():
-    F(orange)
+    F(black)
     #F(front)
     pass
 
-printSide(aqua)
+printSide(yellow)
 whiteCross()
-printSide(aqua)
+printSide(yellow)
 
 
