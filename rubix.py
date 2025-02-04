@@ -1,27 +1,13 @@
-# class edge:
-#     def __init__(self, c1):
-#         self.c1 = c1
+# step 7: R U R' F' SPICY R' F R2 U' R', yellow top 
+# step 8: M2 U' M' U'2 M U' M2
 
-# class edge:
-#     def __init__(self, c1,c2):
-#         self.c1 = c1
-#         self.c2 = c2
-
-# class corner:
-#     def __init__(self, c1,c2,c3):
-#         self.c1 = c1
-#         self.c2 = c2
-#         self.c3 = c3
 # Array to hold the current colors on the different sides
-# Options are: Y,B,W,O,Bl,A
+# Options are: (Y)ellow,(B)lue,(W)hite,(O)range,(Bl)ack,(A)qua
 # Ordered 0-8, from top left to bottom right, 4 is the center piece
 # 0 1 2
 # 3 4 5
 # 6 7 8
-# Blue side facing you, white on top
-# step 7: R U R' F' SPICY R' F R2 U' R', yellow top 
-# step 8: M2 U' M' U'2 M U' M2
-
+# Below are some hard coded inital values for testing
 # From solved:
 # U, then turn everything 360, front right back left
 yellow = ['Y','W','W','W','Y','W','Y','W','W']
@@ -31,20 +17,36 @@ orange = ['O','O','Bl','O','O','Bl','A','A','B']
 black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
 aqua = ['A','A','O','A','A','B','Bl','Bl','B']
 
+# Blue side facing you, white on top
 front = blue
 top = white
 bottom = yellow
 
+# Array to hold the steps taken to solve the cube
+steps = ['']
+
+# Function to set the cubes arrays
 def setCube():
     temp = input("Blue Input: ")
 
     pass
 
+# Neatly prints one side, used for troubleshooting
 def printSide(list):
     print(list[0] + " " + list[1] + " " + list[2])
     print(list[3] + " " + list[4] + " " + list[5])
     print(list[6] + " " + list[7] + " " + list[8] + "\n")
 
+# Neatly prints all sides, used for troubleshooting
+def printAll():
+    sidesNames = ['Blue', 'Orange', 'Aqua', 'Black', 'White', 'Yellow']
+    sides = [blue,orange,aqua, black, white, yellow]
+    for i in range(0,6):
+        print(sidesNames[i])
+        printSide(sides[i])
+    print('--------------------------------')
+
+# Returns the color to the right
 def nextSide(color, thisTop):
     if(thisTop == white):
         if(color == blue):
@@ -58,6 +60,7 @@ def nextSide(color, thisTop):
     else:
         return prevSide(color, white)
 
+# Returns the color to the left
 def prevSide(color, thisTop):
     if(thisTop == white):
         if(color == blue):
@@ -105,6 +108,8 @@ def D(bottom):
         temp2[0:3] = temp[0:3]
         temp[0:3] = tempFront[0:3]
 
+    steps.append('D')
+
 #Clockwise turn of front face
 def F(front):
     color = -1
@@ -137,27 +142,34 @@ def F(front):
         left[2:9:3] = yellow[2:9:3]
         yellow[2:9:3] = right[0:7:3][::-1]
         right[0:7:3] = white[2:9:3]
-        white[2:9:3] = tempLeft[8:1:-3]
+        white[2:9:3] = tempLeft[8:1:-3][::-1]
     elif color == 2: #aqua
-        left[2:9:3] = yellow[0:3][::-1]
+        left[2:9:3] = yellow[6:9][::-1]
         yellow[6:9] = right[0:7:3]
-        right[0:7:3] = white[6:9][::-1]
+        right[0:7:3] = white[0:3][::-1]
         white[0:3] = tempLeft[8:1:-3][::-1]
     else:#black
-        left[2:9:3] = yellow[0:7:3]
+        left[2:9:3] = yellow[0:7:3][::-1]
         yellow[0:7:3] = right[0:7:3]
         right[0:7:3] = white[0:7:3]
         white[0:7:3] = tempLeft[8:1:-3]
     
+    steps.append('F')
+    
 
+# The following functions are all the steps needed to solve the cube
+# They are in order, they assume that the previous function has been ran correctly
 
 def whiteCross():
-    F(black)
-    #F(front)
-    pass
+    sides = [blue,orange,aqua, black]
+    for thisSide in sides:
+        while thisSide[4] != thisSide[7]:
+            D(yellow)
+        F(thisSide)
+        F(thisSide)
 
-printSide(yellow)
+    
 whiteCross()
-printSide(yellow)
+printAll()
 
 
