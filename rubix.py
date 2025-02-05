@@ -141,7 +141,7 @@ def F(front):
     elif color == 1: #orange
         left[2:9:3] = yellow[2:9:3]
         yellow[2:9:3] = right[0:7:3][::-1]
-        right[0:7:3] = white[2:9:3]
+        right[0:7:3] = white[2:9:3][::-1]
         white[2:9:3] = tempLeft[8:1:-3][::-1]
     elif color == 2: #aqua
         left[2:9:3] = yellow[6:9][::-1]
@@ -155,12 +155,49 @@ def F(front):
         white[0:7:3] = tempLeft[8:1:-3]
     
     steps.append('F')
-    
 
+#AntiClockwise turn of front face
+def FPrime(front):
+    F(front)
+    printAll()
+    F(front)
+    printAll()
+    F(front)
+    printAll()
+
+#Moving right column up
+def R(front,top):
+    F(nextSide(front,top))
+
+#Moving right column down
+def RPrime(front,top):
+    FPrime(nextSide(front,top))
+
+#Moving top left
+def U(top):
+    D(top)
+
+
+#Moving top right
+def UPrime(top):
+    U(top)
+    U(top)
+    U(top)
+
+#Right spicy is moving right side up, then top left, then right down, then top right
+def rSpicy(front, top):
+    R(front,top)
+    printAll()
+    U(top)
+    printAll()
+    RPrime(front,top)
+    printAll()
+    UPrime(top)
+    
 # The following functions are all the steps needed to solve the cube
 # They are in order, they assume that the previous function has been ran correctly
 
-def whiteCross():
+def extendedWhiteCross():
     sides = [blue,orange,aqua, black]
     for thisSide in sides:
         while thisSide[4] != thisSide[7]:
@@ -168,8 +205,13 @@ def whiteCross():
         F(thisSide)
         F(thisSide)
 
+def whiteCorners():
+    pass
     
-whiteCross()
+# extendedWhiteCross()
+rSpicy(front,top)
+# RPrime(blue,white)
+#F(orange)
 printAll()
 
 
