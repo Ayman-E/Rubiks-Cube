@@ -10,12 +10,19 @@
 # Below are some hard coded inital values for testing
 # From solved:
 # U, then turn everything 360, front right back left
-yellow = ['Y','W','W','W','Y','W','Y','W','W']
-blue = ['O','B','A','B','B','A','B','O','Bl']
-white = ['W','Y','Y','Y','W','Y','W','Y','Y']
-orange = ['O','O','Bl','O','O','Bl','A','A','B']
-black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
-aqua = ['A','A','O','A','A','B','Bl','Bl','B']
+# yellow = ['Y','W','W','W','Y','W','Y','W','W']
+# blue = ['O','B','A','B','B','A','B','O','Bl']
+# white = ['W','Y','Y','Y','W','Y','W','Y','Y']
+# orange = ['O','O','Bl','O','O','Bl','A','A','B']
+# black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
+# aqua = ['A','A','O','A','A','B','Bl','Bl','B']
+
+yellow = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'W']
+blue = ['O', 'B', 'A', 'B', 'B', 'A', 'O', 'B', 'A']
+white = ['Y', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+orange = ['Bl', 'O', 'Bl', 'Bl', 'O', 'O', 'Bl', 'O', 'A']
+black = ['O', 'Bl', 'B', 'O', 'Bl', 'Bl', 'B', 'Bl', 'B']
+aqua = ['B', 'A', 'A', 'B', 'A', 'A', 'O', 'A', 'Bl']
 
 # Blue side facing you, white on top
 front = blue
@@ -23,7 +30,8 @@ top = white
 bottom = yellow
 
 # Array to hold the steps taken to solve the cube
-steps = ['']
+steps = []
+# Format: Move: (F)ront / (T)op
 
 # Function to set the cubes arrays
 def setCube():
@@ -74,6 +82,68 @@ def prevSide(color, thisTop):
     else:
         return nextSide(color, white)
 
+def alignedCorner(color1,color2):
+    cornerMap = {
+        "B": 6,  # Blue Black Corner
+        "O": 8,  # Orange Blue Corner
+        "A": 2,  # Aqua Orange Corner
+        "Bl": 0  # Black Aqua Corner
+    }
+
+    return (
+        color1[0] == color1[4] and 
+        color2[2] == color2[4] and 
+        white[cornerMap.get(color1[4], -1)] == "W"
+    )
+
+def correctCornerSpot(color1,color2):
+    cornerMap = {
+        "B": 6,  # Blue Black Corner
+        "O": 8,  # Orange Blue Corner
+        "A": 2,  # Aqua Orange Corner
+        "Bl": 0  # Black Aqua Corner
+    }
+
+    myList = []
+    myList.append(color1[0])
+    myList.append(color2[2])
+    myList.append(white[cornerMap.get(color1[4], -1)])
+    
+    return (
+        color1[4] in myList and 
+        color2[4] in myList and 
+        "W" in myList
+    )
+
+def correctCornerPiece(color1,color2):
+    cornerMap = {
+        "B": 6,  # Blue Black Corner
+        "O": 8,  # Orange Blue Corner
+        "A": 2,  # Aqua Orange Corner
+        "Bl": 0  # Black Aqua Corner
+    }   
+
+
+    myList = []
+    myList.append(color1[4])
+    myList.append(color2[4])
+    myList.append("W")
+    count = 0
+
+    faces = [color2,nextSide(color2,yellow)]
+    faces.append(nextSide(faces[1],yellow))
+    faces.append(color1)
+    while count < 3:
+        if (faces[count][0] in myList and faces[count+1][2] in myList and white[cornerMap.get(faces[count][4], -1)] in myList) == True:
+            FPrime(faces[count])
+            D(yellow)
+            F(faces[count])
+            return
+        count += 1
+
+def putInCorner(color1,color2):
+    pass
+
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
 
 #Clockwise turn of bottom side
@@ -95,6 +165,7 @@ def D(bottom):
         temp = prevSide(temp2,white) 
         temp2[6:9] = temp[6:9]
         temp[6:9] = tempFront[6:9]
+        steps.append('D:W')
     else: #If the bottom side is the white side
         #Makes a copy of the front side
         tempFront = front[:]
@@ -107,8 +178,7 @@ def D(bottom):
         temp = prevSide(temp2,yellow) 
         temp2[0:3] = temp[0:3]
         temp[0:3] = tempFront[0:3]
-
-    steps.append('D')
+        steps.append('D:Y')
 
 #Clockwise turn of front face
 def F(front):
@@ -138,32 +208,31 @@ def F(front):
         yellow[0:3] = right[0:7:3][::-1]
         right[0:7:3] = white[6:9]
         white[6:9] = tempLeft[8:1:-3]
+        steps.append('F:B')  
     elif color == 1: #orange
         left[2:9:3] = yellow[2:9:3]
         yellow[2:9:3] = right[0:7:3][::-1]
         right[0:7:3] = white[2:9:3][::-1]
         white[2:9:3] = tempLeft[8:1:-3][::-1]
+        steps.append('F:O')  
     elif color == 2: #aqua
         left[2:9:3] = yellow[6:9][::-1]
         yellow[6:9] = right[0:7:3]
         right[0:7:3] = white[0:3][::-1]
         white[0:3] = tempLeft[8:1:-3][::-1]
+        steps.append('F:A')  
     else:#black
         left[2:9:3] = yellow[0:7:3][::-1]
         yellow[0:7:3] = right[0:7:3]
         right[0:7:3] = white[0:7:3]
         white[0:7:3] = tempLeft[8:1:-3]
+        steps.append('F:Bl')  
     
-    steps.append('F')
-
 #AntiClockwise turn of front face
 def FPrime(front):
     F(front)
-    printAll()
     F(front)
-    printAll()
     F(front)
-    printAll()
 
 #Moving right column up
 def R(front,top):
@@ -177,7 +246,6 @@ def RPrime(front,top):
 def U(top):
     D(top)
 
-
 #Moving top right
 def UPrime(top):
     U(top)
@@ -187,11 +255,8 @@ def UPrime(top):
 #Right spicy is moving right side up, then top left, then right down, then top right
 def rSpicy(front, top):
     R(front,top)
-    printAll()
     U(top)
-    printAll()
     RPrime(front,top)
-    printAll()
     UPrime(top)
     
 # The following functions are all the steps needed to solve the cube
@@ -206,12 +271,38 @@ def extendedWhiteCross():
         F(thisSide)
 
 def whiteCorners():
-    pass
-    
+    sides = [blue,orange,aqua, black]
+    for thisSide in sides:
+        myNextSide = nextSide(thisSide,yellow)
+        if alignedCorner(thisSide,myNextSide) == False: #If its correct then don't do anything
+            if correctCornerSpot(thisSide,myNextSide) == True: #If its in the right spot but wrong orientation then rSpicy until good
+                while correctCornerSpot(thisSide,myNextSide) == False:
+                    rSpicy(thisSide,yellow)
+            else:
+                # Wrong spot Cases:
+                # 1. In the spot of someone elses corner
+                # Following function moves the piece to the yellow top if its on the white bottom, otherwise does nothing
+                correctCornerPiece(thisSide,myNextSide)
+
+                # 2. At the top
+
+
+                pass
+        
+
+
 # extendedWhiteCross()
-rSpicy(front,top)
-# RPrime(blue,white)
-#F(orange)
+
 printAll()
+
+print(steps)
+
+# print(blue)
+# print(orange)
+# print(aqua)
+# print(black)
+# print(white)
+# print(yellow)
+
 
 
