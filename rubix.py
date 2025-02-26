@@ -34,6 +34,7 @@ steps = []
 # Format: Move: (F)ront / (T)op
 
 # Function to set the cubes arrays
+# Eventually will use a camera and learn to use computer vision to set the cube
 def setCube():
     temp = input("Blue Input: ")
 
@@ -82,6 +83,7 @@ def prevSide(color, thisTop):
     else:
         return nextSide(color, white)
 
+#Returns true if the white corner is aligned correctly
 def alignedCorner(color1,color2):
     cornerMap = {
         "B": 6,  # Blue Black Corner
@@ -96,18 +98,32 @@ def alignedCorner(color1,color2):
         white[cornerMap.get(color1[4], -1)] == "W"
     )
 
-def correctCornerSpot(color1,color2):
-    cornerMap = {
+# Checks if the white corner piece is in the correct spot, can check the bottom and top face
+def correctCornerSpot(color1,color2,direction):
+    cornerMapWhite = {
         "B": 6,  # Blue Black Corner
         "O": 8,  # Orange Blue Corner
         "A": 2,  # Aqua Orange Corner
         "Bl": 0  # Black Aqua Corner
     }
 
+    cornerMapYellow = {
+        "B": 0,  # Blue Black Corner
+        "O": 2,  # Orange Blue Corner
+        "A": 8,  # Aqua Orange Corner
+        "Bl": 6  # Black Aqua Corner
+    }
+
     myList = []
-    myList.append(color1[0])
-    myList.append(color2[2])
-    myList.append(white[cornerMap.get(color1[4], -1)])
+    # If direction is true then it checks the bottom white side, otherwise it checks the top yellow side
+    if (direction):
+        myList.append(color1[0])
+        myList.append(color2[2])
+        myList.append(white[cornerMapWhite.get(color1[4], -1)])
+    else:
+        myList.append(color1[6])
+        myList.append(color2[8])
+        myList.append(yellow[cornerMapYellow.get(color1[4], -1)])
     
     return (
         color1[4] in myList and 
@@ -115,6 +131,7 @@ def correctCornerSpot(color1,color2):
         "W" in myList
     )
 
+# Checks the white corners to see if the inputed corner piece is in the bottom, if it is, it moves it to the yellow side
 def correctCornerPiece(color1,color2):
     cornerMap = {
         "B": 6,  # Blue Black Corner
@@ -141,8 +158,13 @@ def correctCornerPiece(color1,color2):
             return
         count += 1
 
+# Puts the inputted corner from the yellow side to its correct spot in the corresponding white corner
 def putInCorner(color1,color2):
-    pass
+    while correctCornerSpot(color1,color2,False) == False:
+        D(yellow)
+
+    while alignedCorner(color1,color2) == False:
+        rSpicy(color1,yellow) 
 
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
 
@@ -262,6 +284,7 @@ def rSpicy(front, top):
 # The following functions are all the steps needed to solve the cube
 # They are in order, they assume that the previous function has been ran correctly
 
+# Solves the whtie cross, assumes a yellow daisy is made
 def extendedWhiteCross():
     sides = [blue,orange,aqua, black]
     for thisSide in sides:
@@ -270,13 +293,14 @@ def extendedWhiteCross():
         F(thisSide)
         F(thisSide)
 
+# Solves the white corners, assumes an extended white cross is made
 def whiteCorners():
     sides = [blue,orange,aqua, black]
     for thisSide in sides:
         myNextSide = nextSide(thisSide,yellow)
         if alignedCorner(thisSide,myNextSide) == False: #If its correct then don't do anything
-            if correctCornerSpot(thisSide,myNextSide) == True: #If its in the right spot but wrong orientation then rSpicy until good
-                while correctCornerSpot(thisSide,myNextSide) == False:
+            if correctCornerSpot(thisSide,myNextSide,True) == True: #If its in the right spot but wrong orientation then rSpicy until good
+                while alignedCorner(thisSide,myNextSide) == False:
                     rSpicy(thisSide,yellow)
             else:
                 # Wrong spot Cases:
@@ -285,15 +309,18 @@ def whiteCorners():
                 correctCornerPiece(thisSide,myNextSide)
 
                 # 2. At the top
+                putInCorner(thisSide,myNextSide)
 
-
-                pass
         
 
 
 # extendedWhiteCross()
 
+
 printAll()
+whiteCorners()
+printAll()
+
 
 print(steps)
 
