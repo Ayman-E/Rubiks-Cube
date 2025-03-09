@@ -10,6 +10,7 @@
 # Below are some hard coded inital values for testing
 # From solved:
 # U, then turn everything 360, front right back left
+# Yellow Daisy
 # yellow = ['Y','W','W','W','Y','W','Y','W','W']
 # blue = ['O','B','A','B','B','A','B','O','Bl']
 # white = ['W','Y','Y','Y','W','Y','W','Y','Y']
@@ -17,12 +18,27 @@
 # black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
 # aqua = ['A','A','O','A','A','B','Bl','Bl','B']
 
-yellow = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'W']
-blue = ['O', 'B', 'A', 'B', 'B', 'A', 'O', 'B', 'A']
-white = ['Y', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
-orange = ['Bl', 'O', 'Bl', 'Bl', 'O', 'O', 'Bl', 'O', 'A']
-black = ['O', 'Bl', 'B', 'O', 'Bl', 'Bl', 'B', 'Bl', 'B']
-aqua = ['B', 'A', 'A', 'B', 'A', 'A', 'O', 'A', 'Bl']
+# Extended white cross
+# yellow = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'W']
+# blue = ['O', 'B', 'A', 'B', 'B', 'A', 'O', 'B', 'A']
+# white = ['Y', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+# orange = ['Bl', 'O', 'Bl', 'Bl', 'O', 'O', 'Bl', 'O', 'A']
+# black = ['O', 'Bl', 'B', 'O', 'Bl', 'Bl', 'B', 'Bl', 'B']
+# aqua = ['B', 'A', 'A', 'B', 'A', 'A', 'O', 'A', 'Bl']
+
+# White Corners
+# yellow = ['Y', 'Y', 'Bl', 'Y', 'Y', 'O', 'A', 'Bl', 'Y']
+# blue = ['B', 'B', 'B', 'Y', 'B', 'Bl', 'Bl', 'Bl', 'B']
+# white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+# orange = ['O', 'O', 'O', 'B', 'O', 'B', 'Y', 'A', 'B']
+# black = ['Bl', 'Bl', 'Bl', 'O', 'Bl', 'B', 'O', 'A', 'A']
+# aqua = ['A', 'A', 'A', 'O', 'A', 'Y', 'O', 'A', 'Y']
+yellow = ['Y', 'O', 'O', 'B', 'Y', 'A', 'Bl', 'O', 'A']
+blue = ['B', 'B', 'B', 'Y', 'B', 'Y', 'O', 'B', 'A']
+white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+orange = ['O', 'O', 'O', 'A', 'O', 'Y', 'Y', 'Bl', 'Bl']
+black = ['Bl', 'Bl', 'Bl', 'Y', 'Bl', 'B', 'Y', 'Bl', 'B']
+aqua = ['A', 'A', 'A', 'O', 'A', 'Bl', 'Y', 'A', 'B']
 
 # Blue side facing you, white on top
 front = blue
@@ -84,7 +100,7 @@ def prevSide(color, thisTop):
         return nextSide(color, white)
 
 #Returns true if the white corner is aligned correctly
-def alignedCorner(color1,color2):
+def alignedPiece(color1,color2,corner):
     cornerMap = {
         "B": 6,  # Blue Black Corner
         "O": 8,  # Orange Blue Corner
@@ -92,11 +108,20 @@ def alignedCorner(color1,color2):
         "Bl": 0  # Black Aqua Corner
     }
 
-    return (
-        color1[0] == color1[4] and 
-        color2[2] == color2[4] and 
-        white[cornerMap.get(color1[4], -1)] == "W"
-    )
+    # If checking a corner
+    if (corner):
+        return (
+            color1[0] == color1[4] and 
+            color2[2] == color2[4] and 
+            white[cornerMap.get(color1[4], -1)] == "W"
+        )
+    else:
+        # If checking an edge
+        return (
+            color1[3] == color1[4] and 
+            color2[5] == color2[4]
+        )
+
 
 # Checks if the white corner piece is in the correct spot, can check the bottom and top face
 def correctCornerSpot(color1,color2,direction):
@@ -163,8 +188,50 @@ def putInCorner(color1,color2):
     while correctCornerSpot(color1,color2,False) == False:
         D(yellow)
 
-    while alignedCorner(color1,color2) == False:
+    while alignedPiece(color1,color2,True) == False:
         rSpicy(color1,yellow) 
+
+# Checks if an edge piece is in the wrong spot/orientation in the second layer
+def incorrectEdgePiece(color1, color2):
+    myList = [color1[4], color2[4]]
+
+    faces = [color1, color2, nextSide(color2, yellow),prevSide(color1, yellow)]
+
+    count = 0
+    while count < 3:
+        # Check if the edge piece is in the wrong spot or orientation
+        if (faces[count][3] in myList and faces[count+1][5] in myList) == True:
+            # Moves the piece to the top layer
+            rSpicy(faces[count], yellow)
+            lSpicy(faces[count+1],yellow)
+        count += 1
+
+# Puts the inputted edge from the yellow side to its correct spot
+def putInEdge(color1,color2):
+    # Map for the position above the edge piece on each yellow side
+    edgeMap = {
+        "B": 1, 
+        "O": 5,  
+        "A": 7, 
+        "Bl": 3  
+    }   
+    count = 0
+    while count < 4:
+        # If the color of the edge piece on the face is color1 it will do this, otherwise it will do the else if
+        if(color1[7] == color1[4] and yellow[edgeMap.get(color1[4],-1)] == color2[4]):
+            D(yellow)
+            rSpicy(color1,yellow)
+            lSpicy(color2,yellow)
+            return
+        elif (color2[7] == color2[4] and yellow[edgeMap.get(color2[4],-1)] == color1[4]):
+            DPrime(yellow)
+            lSpicy(color2,yellow)
+            rSpicy(color1,yellow)
+            return
+        else:
+            D(yellow)
+            count += 1
+        
 
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
 
@@ -249,7 +316,14 @@ def F(front):
         right[0:7:3] = white[0:7:3]
         white[0:7:3] = tempLeft[8:1:-3]
         steps.append('F:Bl')  
-    
+
+#Anticlockwise turn of bottom side
+def DPrime(top):
+    D(top)
+    D(top)
+    D(top)
+
+
 #AntiClockwise turn of front face
 def FPrime(front):
     F(front)
@@ -280,6 +354,14 @@ def rSpicy(front, top):
     U(top)
     RPrime(front,top)
     UPrime(top)
+
+#Pretty much a right spicy but on the other side
+def lSpicy(front, top):
+    oppositeSide = prevSide(prevSide(front,top),top)
+    RPrime(oppositeSide,top)
+    UPrime(top)
+    R(oppositeSide,top)
+    U(top)
     
 # The following functions are all the steps needed to solve the cube
 # They are in order, they assume that the previous function has been ran correctly
@@ -298,9 +380,9 @@ def whiteCorners():
     sides = [blue,orange,aqua, black]
     for thisSide in sides:
         myNextSide = nextSide(thisSide,yellow)
-        if alignedCorner(thisSide,myNextSide) == False: #If its correct then don't do anything
+        if alignedPiece(thisSide,myNextSide,True) == False: #If its correct then don't do anything
             if correctCornerSpot(thisSide,myNextSide,True) == True: #If its in the right spot but wrong orientation then rSpicy until good
-                while alignedCorner(thisSide,myNextSide) == False:
+                while alignedPiece(thisSide,myNextSide,True) == False:
                     rSpicy(thisSide,yellow)
             else:
                 # Wrong spot Cases:
@@ -309,20 +391,39 @@ def whiteCorners():
                 correctCornerPiece(thisSide,myNextSide)
 
                 # 2. At the top
+                # Fololwing function moves the correct piece so that is aligned in the right spot, then puts it in
+
                 putInCorner(thisSide,myNextSide)
 
-        
+# Solves the second layer
+def secondLayer():
+    sides = [blue,orange,aqua, black]
+    for thisSide in sides:
+        myNextSide = nextSide(thisSide,yellow)
+        # Three Cases:
+        # 1. The piece is in the correct spot
+        # 2. The piece is in the 2nd layer somewhere
+        # 3. The piece is in the yellow layer
+        if alignedPiece(thisSide,myNextSide,False) == False: #If its correct then don't do anything
+            # If it is in the second layer, then move it to the top, otherwise do nothing
+            incorrectEdgePiece(thisSide,myNextSide)
+
+            # Now the edge piece is somewhere at the top, this function inserts it
+            putInEdge(thisSide,myNextSide)
+
+# printAll()
 
 
 # extendedWhiteCross()
+# whiteCorners()
 
+secondLayer()
 
 printAll()
-whiteCorners()
-printAll()
 
 
-print(steps)
+
+# print(steps)
 
 # print(blue)
 # print(orange)
