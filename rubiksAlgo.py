@@ -259,6 +259,20 @@ def whichCase():
     #If we are here, then that means we have just the yellow dot
     return blue, 3 #Arbitrary color, doesn't matter    
 
+# Following function returns which side (if any) are chest plates, rotates it to be in the chestplate
+def whichChest():
+    colors = [blue,black,aqua,orange]
+    count = 0
+    myList = []
+    for curColor in colors:
+        if (curColor[6] == curColor[8]): #If these two are the same then we know its a chest plate
+            count += 1
+            myList.append(curColor)
+            while (curColor[6] != curColor[4]):
+                D(yellow)
+    return myList,count
+    
+
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
 
 #Clockwise turn of bottom side
@@ -461,6 +475,45 @@ def yellowCorners():
             rSpicy(blue,white)
         D(yellow)
 
+# Solves the chestplates
+def chestPlates():
+    myList, numberOfChests = whichChest()
+
+    if numberOfChests == 4: return #If it has four chests then do nothing
+    elif numberOfChests == 1:
+        # Following is the algorithm that needs to be ran
+        # It needs to be ran with the chest plate in your left hand, yellow on top
+        # R U R’ F’ (spicy) R’ F R2 U’ R’
+        besideChest = nextSide(myList[0],yellow)
+        R(besideChest,yellow)
+        U(yellow)
+        RPrime(besideChest,yellow)
+        FPrime(besideChest)
+        rSpicy(besideChest,yellow)
+        RPrime(besideChest,yellow)
+        F(besideChest)
+        R(besideChest,yellow)
+        R(besideChest,yellow)
+        UPrime(yellow)
+        RPrime(besideChest,yellow)
+
+        #Now I have four chest plates, calling whichChest rotates it for me
+        myList, numberOfChests = whichChest()
+    else:
+        # No chest plate, have to run algorithm on any side which gives one chest plate
+        # Then do it again but with the chest plate
+        U(yellow)
+        RPrime(blue,yellow)
+        FPrime(blue)
+        rSpicy(blue,yellow)
+        RPrime(blue,yellow)
+        F(blue)
+        R(blue,yellow)
+        R(blue,yellow)
+        UPrime(yellow)
+        RPrime(blue,yellow)
+        chestPlates()
+
 
 # printAll()
 # extendedWhiteCross()
@@ -468,6 +521,7 @@ def yellowCorners():
 secondLayer()
 yellowCross()
 yellowCorners()
+chestPlates()
 printAll()
 
 
