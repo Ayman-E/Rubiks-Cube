@@ -232,6 +232,32 @@ def putInEdge(color1,color2):
             D(yellow)
             count += 1
         
+# Following function returns which side is the front for the yellow cross step
+# It returns a value representing which case we are on
+def whichCase():
+    # If it is already a yellow cross
+    if (yellow[1] == "Y" and yellow[3] == "Y" and
+        yellow[5] == "Y" and yellow[7] == "Y"):
+        return blue, 0 #Arbitrary side, doesn't matter
+    
+    # If it is the yellow line, two cases of how it could look
+    if (yellow[3] == "Y" and yellow[5] == "Y"): # Horizontol (If Blue side facing away from you)
+        return blue, 1 #Either Blue or Aqua side work
+    elif (yellow[1] == "Y" and yellow[7] == "Y"): # Vertical (If Blue side facing away from you)
+        return orange, 1 #Either Orange or Black side work
+
+    # If it is the half cross, four cases for each side
+    if (yellow[1] == "Y" and yellow[3] == "Y"):
+        return aqua,2
+    elif (yellow[1] == "Y" and yellow[5] == "Y"):
+        return black, 2
+    elif (yellow[5] == "Y" and yellow[7] == "Y"):
+        return blue, 2   
+    elif (yellow[7] == "Y" and yellow[3] == "Y"):
+        return orange, 2
+
+    #If we are here, then that means we have just the yellow dot
+    return blue, 3 #Arbitrary color, doesn't matter    
 
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
 
@@ -411,14 +437,37 @@ def secondLayer():
             # Now the edge piece is somewhere at the top, this function inserts it
             putInEdge(thisSide,myNextSide)
 
+# Solves the yellow cross
+def yellowCross():
+    # Four Cases:
+    # 1. Just yellow middle dot
+    # 2. Yellow Half cross
+    # 3. Yellow line
+    # 4. Yellow Cross
+    # Need to detect which case I am currently on, getting from one case to the next is a simple combo
+    whichSide, case = whichCase()
+    
+    # Now to run the algorithm
+    F(whichSide)
+    for _ in range(case):
+        rSpicy(whichSide,yellow)
+    FPrime(whichSide)
+
+# Solves the yellow corners
+def yellowCorners():
+    # Simple algorithm that solves the four yellow corners
+    for _ in range(4):
+        while(yellow[2] != "Y"):
+            rSpicy(blue,white)
+        D(yellow)
+
+
 # printAll()
-
-
 # extendedWhiteCross()
 # whiteCorners()
-
 secondLayer()
-
+yellowCross()
+yellowCorners()
 printAll()
 
 
