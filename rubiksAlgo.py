@@ -271,6 +271,14 @@ def whichChest():
             while (curColor[6] != curColor[4]):
                 D(yellow)
     return myList,count
+
+# Returns true if the cube is complete, otherwise false
+def cubeDone():
+    colors = [blue,black,aqua,orange]
+    for curColor in colors:
+        if all(i == curColor[4] for i in curColor) == False:
+            return False
+    return True
     
 
 #Following functions are all Rubix cube moves, a png is provided to provide a visual
@@ -356,6 +364,17 @@ def F(front):
         right[0:7:3] = white[0:7:3]
         white[0:7:3] = tempLeft[8:1:-3]
         steps.append('F:Bl')  
+
+# Moves the middle layer up, only use case is when yellow is on top
+def M(front):
+    oppositeSide = prevSide(prevSide(front,yellow),yellow)
+    tempFront = front[:]
+
+    if front == blue:
+        front[1:4:7] = white[1:4:7]
+        white[1:4:7] = aqua[1:4:7]
+
+
 
 #Anticlockwise turn of bottom side
 def DPrime(top):
@@ -513,6 +532,15 @@ def chestPlates():
         UPrime(yellow)
         RPrime(blue,yellow)
         chestPlates()
+
+# This is the final step, it solves the cube completely
+def solveAll():
+    # Two cases, four chest plates, or 3 chest plates with one side
+    colors = [blue,black,aqua,orange]
+    for curColor in colors:
+        if all(i == curColor[4] for i in curColor):
+            oppositeSide = nextSide(nextSide(curColor,yellow),yellow)
+            
 
 
 # printAll()
