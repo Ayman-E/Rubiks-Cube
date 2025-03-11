@@ -367,21 +367,40 @@ def F(front):
 
 # Moves the middle layer up, only use case is when yellow is on top
 def M(front):
-    oppositeSide = prevSide(prevSide(front,yellow),yellow)
     tempFront = front[:]
 
     if front == blue:
-        front[1:4:7] = white[1:4:7]
-        white[1:4:7] = aqua[1:4:7]
+        front[1:8:3] = white[1:8:3]
+        white[1:8:3] = aqua[1:8:3][::-1]
+        aqua[1:8:3] = yellow[1:8:3][::-1]
+        yellow[1:8:3] = tempFront[1:8:3]
+    elif front == orange:
+        front[1:8:3] = white[3:6:1]
+        white[3:6:1] = black[1:8:3][::-1]
+        black[1:8:3] = yellow[3:6:1]
+        yellow[3:6:1] = tempFront[1:8:3][::-1]
+    elif front == black:
+        front[1:8:3] = white[3:6:1]
+        white[3:6:1] = orange[1:8:3]
+        orange[1:8:3] = yellow[3:6:1][::-1]
+        yellow[3:6:1] = tempFront[1:8:3]
+    else: #Front == aqua
+        front[1:8:3] = white[1:8:3]
+        white[1:8:3] = blue[1:8:3]
+        blue[1:8:3] = yellow[1:8:3]
+        yellow[1:8:3] = tempFront[1:8:3][::-1]
 
-
+#Move middle down
+def MPrime(front):
+    M(front)
+    M(front)
+    M(front)
 
 #Anticlockwise turn of bottom side
 def DPrime(top):
     D(top)
     D(top)
     D(top)
-
 
 #AntiClockwise turn of front face
 def FPrime(front):
@@ -540,7 +559,32 @@ def solveAll():
     for curColor in colors:
         if all(i == curColor[4] for i in curColor):
             oppositeSide = nextSide(nextSide(curColor,yellow),yellow)
-            
+            # Algorithm to do on oppositeSide of full face:
+            # M2 U’ M’ U’2 M U’ M2
+            while cubeDone() == False:
+                M(oppositeSide)
+                M(oppositeSide)
+                UPrime(yellow)
+                MPrime(oppositeSide)
+                UPrime(yellow)
+                UPrime(yellow)
+                M(oppositeSide)
+                UPrime(yellow)
+                M(oppositeSide)
+                M(oppositeSide)
+            return
+    #If I reach this point then I have 4 chest plates and need to run the algorithm on any color
+    M(blue)
+    M(blue)
+    UPrime(yellow)
+    MPrime(blue)
+    UPrime(yellow)
+    UPrime(yellow)
+    M(blue)
+    UPrime(yellow)
+    M(blue)
+    M(blue)
+    solveAll()
 
 
 # printAll()
@@ -550,6 +594,7 @@ secondLayer()
 yellowCross()
 yellowCorners()
 chestPlates()
+solveAll()
 printAll()
 
 
