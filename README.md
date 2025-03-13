@@ -5,3 +5,4 @@ Current Plan:
 - Test the code further
 - Add the yellow daisy step
 - Implement Computer Vision
+- Clean up the code
