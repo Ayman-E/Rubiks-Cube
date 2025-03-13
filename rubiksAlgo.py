@@ -17,6 +17,12 @@
 # orange = ['O','O','Bl','O','O','Bl','A','A','B']
 # black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
 # aqua = ['A','A','O','A','A','B','Bl','Bl','B']
+yellow = ['A','W','A','W','Y','W','O','W','O']
+blue = ['Bl','Bl','B','B','B','O','O','A','Bl']
+white = ['Bl','Bl','Y','B','W','Y','W','A','W']
+orange = ['O','O','B','A','O','Bl','Y','O','Y']
+black = ['W','O','A','Y','Bl','Y','A','Bl','Y']
+aqua = ['Bl','Y','B','B','A','A','B','B','W']
 
 # Extended white cross
 # yellow = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'W']
@@ -33,12 +39,12 @@
 # orange = ['O', 'O', 'O', 'B', 'O', 'B', 'Y', 'A', 'B']
 # black = ['Bl', 'Bl', 'Bl', 'O', 'Bl', 'B', 'O', 'A', 'A']
 # aqua = ['A', 'A', 'A', 'O', 'A', 'Y', 'O', 'A', 'Y']
-yellow = ['Y', 'O', 'O', 'B', 'Y', 'A', 'Bl', 'O', 'A']
-blue = ['B', 'B', 'B', 'Y', 'B', 'Y', 'O', 'B', 'A']
-white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
-orange = ['O', 'O', 'O', 'A', 'O', 'Y', 'Y', 'Bl', 'Bl']
-black = ['Bl', 'Bl', 'Bl', 'Y', 'Bl', 'B', 'Y', 'Bl', 'B']
-aqua = ['A', 'A', 'A', 'O', 'A', 'Bl', 'Y', 'A', 'B']
+# yellow = ['Y', 'O', 'O', 'B', 'Y', 'A', 'Bl', 'O', 'A']
+# blue = ['B', 'B', 'B', 'Y', 'B', 'Y', 'O', 'B', 'A']
+# white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
+# orange = ['O', 'O', 'O', 'A', 'O', 'Y', 'Y', 'Bl', 'Bl']
+# black = ['Bl', 'Bl', 'Bl', 'Y', 'Bl', 'B', 'Y', 'Bl', 'B']
+# aqua = ['A', 'A', 'A', 'O', 'A', 'Bl', 'Y', 'A', 'B']
 
 # Blue side facing you, white on top
 front = blue
@@ -195,16 +201,17 @@ def putInCorner(color1,color2):
 def incorrectEdgePiece(color1, color2):
     myList = [color1[4], color2[4]]
 
-    faces = [color1, color2, nextSide(color2, yellow),prevSide(color1, yellow)]
+    faces = [color1, color2, nextSide(color2, yellow),prevSide(color1, yellow),color1]
 
     count = 0
-    while count < 3:
+    while count < 4:
         # Check if the edge piece is in the wrong spot or orientation
         if (faces[count][3] in myList and faces[count+1][5] in myList) == True:
             # Moves the piece to the top layer
             rSpicy(faces[count], yellow)
             lSpicy(faces[count+1],yellow)
-        count += 1
+            return
+        else:   count += 1
 
 # Puts the inputted edge from the yellow side to its correct spot
 def putInEdge(color1,color2):
@@ -264,12 +271,21 @@ def whichChest():
     colors = [blue,black,aqua,orange]
     count = 0
     myList = []
+    temp = "X"
     for curColor in colors:
         if (curColor[6] == curColor[8]): #If these two are the same then we know its a chest plate
             count += 1
-            myList.append(curColor)
-            while (curColor[6] != curColor[4]):
-                D(yellow)
+            temp = curColor[6]
+            # while (curColor[6] != curColor[4]):
+            #     D(yellow)
+    if (temp != "X"):
+        for curColor in colors:
+            if curColor[4] == temp:
+                myList.append(curColor)
+                while (curColor[6] != curColor[4]):
+                    D(yellow)
+
+
     return myList,count
 
 # Returns true if the cube is complete, otherwise false
@@ -540,6 +556,7 @@ def chestPlates():
     else:
         # No chest plate, have to run algorithm on any side which gives one chest plate
         # Then do it again but with the chest plate
+        R(blue,yellow)
         U(yellow)
         RPrime(blue,yellow)
         FPrime(blue)
@@ -584,17 +601,23 @@ def solveAll():
     UPrime(yellow)
     M(blue)
     M(blue)
-    solveAll()
+    # solveAll()
 
 
-# printAll()
-# extendedWhiteCross()
-# whiteCorners()
+extendedWhiteCross()
+print("Done extended")
+whiteCorners()
+print("Done white corner")
 secondLayer()
+print("Done second layer")
 yellowCross()
+print("Done yellow cross")
 yellowCorners()
+print("Done yellow corners")
 chestPlates()
+print("Done chest plates")
 solveAll()
+print("Done solved all")
 printAll()
 
 
