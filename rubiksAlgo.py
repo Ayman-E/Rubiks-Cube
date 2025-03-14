@@ -11,45 +11,26 @@
 # From solved:
 # U, then turn everything 360, front right back left
 # Yellow Daisy
-# yellow = ['Y','W','W','W','Y','W','Y','W','W']
-# blue = ['O','B','A','B','B','A','B','O','Bl']
-# white = ['W','Y','Y','Y','W','Y','W','Y','Y']
-# orange = ['O','O','Bl','O','O','Bl','A','A','B']
-# black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
-# aqua = ['A','A','O','A','A','B','Bl','Bl','B']
-yellow = ['A','W','A','W','Y','W','O','W','O']
-blue = ['Bl','Bl','B','B','B','O','O','A','Bl']
-white = ['Bl','Bl','Y','B','W','Y','W','A','W']
-orange = ['O','O','B','A','O','Bl','Y','O','Y']
-black = ['W','O','A','Y','Bl','Y','A','Bl','Y']
-aqua = ['Bl','Y','B','B','A','A','B','B','W']
-
-# Extended white cross
-# yellow = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'W']
-# blue = ['O', 'B', 'A', 'B', 'B', 'A', 'O', 'B', 'A']
-# white = ['Y', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
-# orange = ['Bl', 'O', 'Bl', 'Bl', 'O', 'O', 'Bl', 'O', 'A']
-# black = ['O', 'Bl', 'B', 'O', 'Bl', 'Bl', 'B', 'Bl', 'B']
-# aqua = ['B', 'A', 'A', 'B', 'A', 'A', 'O', 'A', 'Bl']
-
-# White Corners
-# yellow = ['Y', 'Y', 'Bl', 'Y', 'Y', 'O', 'A', 'Bl', 'Y']
-# blue = ['B', 'B', 'B', 'Y', 'B', 'Bl', 'Bl', 'Bl', 'B']
-# white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
-# orange = ['O', 'O', 'O', 'B', 'O', 'B', 'Y', 'A', 'B']
-# black = ['Bl', 'Bl', 'Bl', 'O', 'Bl', 'B', 'O', 'A', 'A']
-# aqua = ['A', 'A', 'A', 'O', 'A', 'Y', 'O', 'A', 'Y']
-# yellow = ['Y', 'O', 'O', 'B', 'Y', 'A', 'Bl', 'O', 'A']
-# blue = ['B', 'B', 'B', 'Y', 'B', 'Y', 'O', 'B', 'A']
-# white = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W']
-# orange = ['O', 'O', 'O', 'A', 'O', 'Y', 'Y', 'Bl', 'Bl']
-# black = ['Bl', 'Bl', 'Bl', 'Y', 'Bl', 'B', 'Y', 'Bl', 'B']
-# aqua = ['A', 'A', 'A', 'O', 'A', 'Bl', 'Y', 'A', 'B']
-
-# Blue side facing you, white on top
-front = blue
-top = white
-bottom = yellow
+yellow = ['Y','W','W','W','Y','W','Y','W','W']
+blue = ['O','B','A','B','B','A','B','O','Bl']
+white = ['W','Y','Y','Y','W','Y','W','Y','Y']
+orange = ['O','O','Bl','O','O','Bl','A','A','B']
+black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
+aqua = ['A','A','O','A','A','B','Bl','Bl','B']
+# Random Test
+# yellow = ['A','W','A','W','Y','W','O','W','O']
+# blue = ['Bl','Bl','B','B','B','O','O','A','Bl']
+# white = ['Bl','Bl','Y','B','W','Y','W','A','W']
+# orange = ['O','O','B','A','O','Bl','Y','O','Y']
+# black = ['W','O','A','Y','Bl','Y','A','Bl','Y']
+# aqua = ['Bl','Y','B','B','A','A','B','B','W']
+# Random Test 2
+# yellow = ['W','W','Y','W','Y','W','W','W','Y']
+# blue = ['A','B','B','A','B','B','A','B','B']
+# white = ['Y','Y','W','Y','W','Y','Y','Y','W']
+# orange = ['O','O','Bl','O','O','Bl','O','O','Bl']
+# black = ['O','Bl','Bl','O','Bl','Bl','O','Bl','Bl']
+# aqua = ['B','A','A','B','A','A','B','A','A']
 
 # Array to hold the steps taken to solve the cube
 steps = []
@@ -264,7 +245,11 @@ def whichCase():
         return orange, 2
 
     #If we are here, then that means we have just the yellow dot
-    return blue, 3 #Arbitrary color, doesn't matter    
+    #We want to do F Rspicy F' then call this function again
+    F(blue) #Arbitrary color, doesn't matter
+    rSpicy(blue,yellow)
+    FPrime(blue)    
+    return whichCase()
 
 # Following function returns which side (if any) are chest plates, rotates it to be in the chestplate
 def whichChest():
@@ -308,11 +293,11 @@ def D(bottom):
     
     if(bottom == yellow):
         #Makes a copy of the front side
-        tempFront = front[:]
+        tempFront = blue[:]
 
         #Rotates the bottom 3 pieces of each side
-        temp = prevSide(front,white)
-        front[6:9] = temp[6:9]
+        temp = prevSide(blue,white)
+        blue[6:9] = temp[6:9]
         temp2 = prevSide(temp,white) 
         temp[6:9] = temp2[6:9]
         temp = prevSide(temp2,white) 
@@ -321,11 +306,11 @@ def D(bottom):
         steps.append('D:W')
     else: #If the bottom side is the white side
         #Makes a copy of the front side
-        tempFront = front[:]
+        tempFront = blue[:]
 
         #Rotates the bottom 3 pieces of each side
-        temp = prevSide(front,yellow)
-        front[0:3] = temp[0:3]
+        temp = prevSide(blue,yellow)
+        blue[0:3] = temp[0:3]
         temp2 = prevSide(temp,yellow) 
         temp[0:3] = temp2[0:3]
         temp = prevSide(temp2,yellow) 
@@ -397,11 +382,11 @@ def M(front):
         yellow[3:6:1] = tempFront[1:8:3][::-1]
     elif front == black:
         front[1:8:3] = white[3:6:1]
-        white[3:6:1] = orange[1:8:3]
+        white[3:6:1] = orange[1:8:3][::-1]
         orange[1:8:3] = yellow[3:6:1][::-1]
         yellow[3:6:1] = tempFront[1:8:3]
     else: #Front == aqua
-        front[1:8:3] = white[1:8:3]
+        front[1:8:3] = white[1:8:3][::-1]
         white[1:8:3] = blue[1:8:3]
         blue[1:8:3] = yellow[1:8:3]
         yellow[1:8:3] = tempFront[1:8:3][::-1]
@@ -601,8 +586,7 @@ def solveAll():
     UPrime(yellow)
     M(blue)
     M(blue)
-    # solveAll()
-
+    solveAll()
 
 extendedWhiteCross()
 print("Done extended")
@@ -618,7 +602,9 @@ chestPlates()
 print("Done chest plates")
 solveAll()
 print("Done solved all")
+# print(steps)
 printAll()
+print("Number of steps:" + str(len(steps)))
 
 
 
