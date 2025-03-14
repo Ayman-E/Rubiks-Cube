@@ -6,3 +6,4 @@ Current Plan:
 - Add the yellow daisy step
 - Implement Computer Vision
 - Clean up the code
+- Make the algorithm more efficient
