@@ -445,6 +445,31 @@ def lSpicy(front, top):
 # The following functions are all the steps needed to solve the cube
 # They are in order, they assume that the previous function has been ran correctly
 
+# Yellow daisy
+def yellowDaisy():
+    sides = [blue,orange,aqua, black]
+
+    edgeMap = {
+        "B": 1,  # Blue Yellow Edge
+        "O": 5,  # Orange Yellow Edge
+        "A": 7,  # Aqua Yellow Edge
+        "Bl": 3  # Black Yellow Edge
+    }
+
+    
+    for thisSide in sides:
+        myNextSide = nextSide(thisSide,white)
+        for _ in range(4):
+            if thisSide[5] == "W":
+                while(yellow(edgeMap.get(myNextSide[4],-1)) == "W"):
+                    D(yellow)
+                FPrime(myNextSide)
+            F(thisSide)
+
+
+            
+
+
 # Solves the whtie cross, assumes a yellow daisy is made
 def extendedWhiteCross():
     sides = [blue,orange,aqua, black]
