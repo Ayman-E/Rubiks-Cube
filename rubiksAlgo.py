@@ -1,3 +1,4 @@
+import random
 # step 7: R U R' F' SPICY R' F R2 U' R', yellow top 
 # step 8: M2 U' M' U'2 M U' M2
 
@@ -7,9 +8,7 @@
 # 0 1 2
 # 3 4 5
 # 6 7 8
-# Below are some hard coded inital values for testing
-# From solved:
-# U, then turn everything 360, front right back left
+# Below is the array filled with a solved cube
 
 yellow = ['Y','Y','Y','Y','Y','Y','Y','Y','Y']
 blue = ['B','B','B','B','B','B','B','B','B']
@@ -17,28 +16,6 @@ white = ['W','W','W','W','W','W','W','W','W']
 orange = ['O','O','O','O','O','O','O','O','O']
 black = ['Bl','Bl','Bl','Bl','Bl','Bl','Bl','Bl','Bl']
 aqua = ['A','A','A','A','A','A','A','A','A']
-
-# Yellow Daisy
-# yellow = ['Y','W','W','W','Y','W','Y','W','W']
-# blue = ['O','B','A','B','B','A','B','O','Bl']
-# white = ['W','Y','Y','Y','W','Y','W','Y','Y']
-# orange = ['O','O','Bl','O','O','Bl','A','A','B']
-# black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
-# aqua = ['A','A','O','A','A','B','Bl','Bl','B']
-# Random Test
-# yellow = ['A','W','A','W','Y','W','O','W','O']
-# blue = ['Bl','Bl','B','B','B','O','O','A','Bl']
-# white = ['Bl','Bl','Y','B','W','Y','W','A','W']
-# orange = ['O','O','B','A','O','Bl','Y','O','Y']
-# black = ['W','O','A','Y','Bl','Y','A','Bl','Y']
-# aqua = ['Bl','Y','B','B','A','A','B','B','W']
-# Random Test 2
-# yellow = ['W','W','Y','W','Y','W','W','W','Y']
-# blue = ['A','B','B','A','B','B','A','B','B']
-# white = ['Y','Y','W','Y','W','Y','Y','Y','W']
-# orange = ['O','O','Bl','O','O','Bl','O','O','Bl']
-# black = ['O','Bl','Bl','O','Bl','Bl','O','Bl','Bl']
-# aqua = ['B','A','A','B','A','A','B','A','A']
 
 # Array to hold the steps taken to solve the cube
 steps = []
@@ -50,6 +27,14 @@ def setCube():
     temp = input("Blue Input: ")
 
     pass
+
+# Scrambles the cube randomly, used for testing
+def scrambleCube(n):
+    tops = [white,yellow]
+    sides = [blue,orange,aqua,black]
+    for _ in range(n):
+        F(random.choice(sides))
+        D(random.choice(tops))
 
 # Neatly prints one side, used for troubleshooting
 def printSide(list):
@@ -482,15 +467,17 @@ def yellowDaisy():
                     FPrime(myNextSide)
                 F(thisSide)
 
-
-            
-
-
 # Solves the whtie cross, assumes a yellow daisy is made
 def extendedWhiteCross():
+    edgeMap = {
+        "B": 1,  # Blue Yellow Edge
+        "O": 5,  # Orange Yellow Edge
+        "A": 7,  # Aqua Yellow Edge
+        "Bl": 3  # Black Yellow Edge
+    }
     sides = [blue,orange,aqua, black]
     for thisSide in sides:
-        while thisSide[4] != thisSide[7]:
+        while (thisSide[4] != thisSide[7] or yellow[edgeMap.get(thisSide[4],-1)] != "W"):
             D(yellow)
         F(thisSide)
         F(thisSide)
@@ -629,37 +616,35 @@ def solveAll():
     M(blue)
     solveAll()
 
-yellowDaisy()
-print("Yellow Daisy Done")
-printAll()
-extendedWhiteCross()
-print("Done extended")
-whiteCorners()
-print("Done white corner")
-secondLayer()
-print("Done second layer")
-yellowCross()
-print("Done yellow cross")
-yellowCorners()
-print("Done yellow corners")
-chestPlates()
-print("Done chest plates")
-solveAll()
-print("Done solved all")
-# print(steps)
-printAll()
-print("Number of steps:" + str(len(steps)))
+# Function that solves the cube by calling all the steps in order, returns true if solved correctly, otherwise returns false
+def solveMyCube():
+    yellowDaisy()
+    print("Yellow Daisy Done")
+    extendedWhiteCross()
+    print("Done extended")
+    whiteCorners()
+    print("Done white corner")
+    secondLayer()
+    print("Done second layer")
+    yellowCross()
+    print("Done yellow cross")
+    yellowCorners()
+    print("Done yellow corners")
+    chestPlates()
+    print("Done chest plates")
+    solveAll()
+    print("Done solved all")
+    print(cubeDone())
+    print("Number of steps:" + str(len(steps)))
+    return cubeDone()
 
-
-
-# print(steps)
-
-# print(blue)
-# print(orange)
-# print(aqua)
-# print(black)
-# print(white)
-# print(yellow)
+# Tests the algorithm 10000 random times
+for _ in range(10000):
+    scrambleCube(25) # Scrambles the cube
+    if solveMyCube() == False: # Solves the cube
+        print("Failed")
+        break
+    steps.clear()
 
 
 
