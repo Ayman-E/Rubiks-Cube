@@ -10,13 +10,21 @@
 # Below are some hard coded inital values for testing
 # From solved:
 # U, then turn everything 360, front right back left
+
+yellow = ['Y','Y','Y','Y','Y','Y','Y','Y','Y']
+blue = ['B','B','B','B','B','B','B','B','B']
+white = ['W','W','W','W','W','W','W','W','W']
+orange = ['O','O','O','O','O','O','O','O','O']
+black = ['Bl','Bl','Bl','Bl','Bl','Bl','Bl','Bl','Bl']
+aqua = ['A','A','A','A','A','A','A','A','A']
+
 # Yellow Daisy
-yellow = ['Y','W','W','W','Y','W','Y','W','W']
-blue = ['O','B','A','B','B','A','B','O','Bl']
-white = ['W','Y','Y','Y','W','Y','W','Y','Y']
-orange = ['O','O','Bl','O','O','Bl','A','A','B']
-black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
-aqua = ['A','A','O','A','A','B','Bl','Bl','B']
+# yellow = ['Y','W','W','W','Y','W','Y','W','W']
+# blue = ['O','B','A','B','B','A','B','O','Bl']
+# white = ['W','Y','Y','Y','W','Y','W','Y','Y']
+# orange = ['O','O','Bl','O','O','Bl','A','A','B']
+# black = ['A','Bl','B','O','Bl','Bl','O','B','Bl']
+# aqua = ['A','A','O','A','A','B','Bl','Bl','B']
 # Random Test
 # yellow = ['A','W','A','W','Y','W','O','W','O']
 # blue = ['Bl','Bl','B','B','B','O','O','A','Bl']
@@ -455,16 +463,24 @@ def yellowDaisy():
         "A": 7,  # Aqua Yellow Edge
         "Bl": 3  # Black Yellow Edge
     }
-
-    
-    for thisSide in sides:
-        myNextSide = nextSide(thisSide,white)
+    while (yellow[1] != "W" or yellow[3] != "W" or yellow[5] != "W" or yellow[7] != "W"):
+        # Checks white side
         for _ in range(4):
-            if thisSide[5] == "W":
-                while(yellow(edgeMap.get(myNextSide[4],-1)) == "W"):
-                    D(yellow)
-                FPrime(myNextSide)
-            F(thisSide)
+                if white[5] == "W":
+                    while(yellow[edgeMap.get(orange[4],-1)] == "W"):
+                        D(yellow)
+                    FPrime(orange)
+                    FPrime(orange)
+                U(white)
+        
+        for thisSide in sides:
+            myNextSide = nextSide(thisSide,white)
+            for _ in range(4):
+                if thisSide[5] == "W":
+                    while(yellow[edgeMap.get(myNextSide[4],-1)] == "W"):
+                        D(yellow)
+                    FPrime(myNextSide)
+                F(thisSide)
 
 
             
@@ -613,6 +629,9 @@ def solveAll():
     M(blue)
     solveAll()
 
+yellowDaisy()
+print("Yellow Daisy Done")
+printAll()
 extendedWhiteCross()
 print("Done extended")
 whiteCorners()
