@@ -7,36 +7,56 @@ cam = cv2.VideoCapture(0)
 # Define window
 cv2.namedWindow('Camera')
 
+points = [
+    (170, 200),
+    (270, 200),
+    (370, 200),
+    (170, 300),
+    (270, 300),
+    (370, 300),
+    (170, 400),
+    (270, 400),
+    (370, 400)
+]
+
+blue = []
+orange = []
+green = []
+pink = []
+yellow = []
+white = []
+
+output = [blue,orange,green,pink,yellow,white]
+
 def color(hsv):
     h, s, v = hsv
 
-    if 93 <= h <= 113 and 159 <= s <= 255 and 56 <= v <= 156:
+    if 93 <= h <= 113 and s > 100:
         return 'B'  # Blue
-    elif 0 <= h <= 17 and 157 <= s <= 255 and 136 <= v <= 236:
+    elif 0 <= h <= 12:
         return 'O'  # Orange
-    elif 38 <= h <= 58 and 93 <= s <= 193 and 75 <= v <= 175:
-        return 'G'  # Green
-    elif 155 <= h <= 175 and 125 <= s <= 225 and 122 <= v <= 222:
-        return 'P'  # Pink
-    elif 11 <= h <= 31 and 130 <= s <= 230 and 106 <= v <= 206:
+    elif 38 <= h <= 70:
+        return 'G'  # Green (Aqua)
+    elif 145 <= h <= 175:
+        return 'P'  # Pink (Black)
+    elif 13 <= h <= 37:
         return 'Y'  # Yellow
-    elif 91 <= h <= 111 and 0 <= s <= 83 and 111 <= v <= 211:
+    elif 71 <= h <= 150 and s < 75:
         return 'W'  # White
     else:
         return '?'  # Unknown color
 
 
-
-
 def pick_color(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN:
-#17  200, 270 208, 350 200
-#170 300, 270 300, 350 300
-#170 400, 260 400, 370 400
-        for y2 in range(200,401,100):
-            for x2 in range(170,371,100):
+        for curColor in output: 
+            for x2, y2 in points:
                 currHSV = hsv_frame[y2, x2]
-                print(color(currHSV))
+                curTile = color(currHSV)
+                # print(f"HSV at ({x2},{y2}): {currHSV} => {curTile}")
+                curColor.append(curTile)
+            # print("-"*50)
+
 
 cv2.setMouseCallback('Camera', pick_color)
 
@@ -48,6 +68,10 @@ while True:
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     cv2.rectangle(frame,(125,150),(400,450),(255,255,255),2)
+
+    for x, y in points:
+        cv2.rectangle(frame, (x, y), (x + 1, y + 1), (0, 0, 255), 1)
+
     cv2.imshow('Camera', frame)
 
     # Press 'q' to exit
