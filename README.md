@@ -1,6 +1,9 @@
 # Rubiks-Cube
 Algorithm that solves a Rubiks cube using the beginners method
 
+Further features to do:
+- Make a physical robot that solves the cube using the given steps
+
 Further Improvements to the project:
 - Utilizle Computer Vision better
   - Currently, the cube has to be in a fixed position. I would like to make the computer detect the edges of the cube and read the colors from there
@@ -16,3 +19,5 @@ Further Improvements to the project:
   - The current average steps to solve is 223, it has been shown that any cube can be solved in 20 moves or less
   - Skip steps like Yellow Daisy / Switch algorithm to non-beginner algorithm
 - Add more error catching, if the input is invalid, it continuously tries to solve the impossible cube
+- Make the steps print out in a more legible way
+
