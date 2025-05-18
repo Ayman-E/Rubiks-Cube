@@ -81,6 +81,7 @@ def printAll():
 def solveThisCube():
     setCube()
     solveMyCube()
+    print(steps)
 
 # --------------------------------------------------------------
 # The following are all helper functions used by other functions
