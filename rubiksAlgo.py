@@ -1,4 +1,5 @@
 import random
+import cvtest
 # step 7: R U R' F' SPICY R' F R2 U' R', yellow top 
 # step 8: M2 U' M' U'2 M U' M2
 
@@ -22,11 +23,20 @@ steps = []
 # Format: Move: (F)ront / (T)op
 
 # Function to set the cubes arrays
-# Eventually will use a camera and learn to use computer vision to set the cube
+# Use a camera to detect the colors of the Rubiks cube
 def setCube():
-    temp = input("Blue Input: ")
+    global blue, orange, aqua, black, white, yellow
 
-    pass
+    sidesNames = ['Blue', 'Orange', 'Aqua', 'Black', 'White', 'Yellow']
+    sides = [None]*6
+    for i in range(0,6):
+        print("Requesting: " + sidesNames[i])
+        sides[i] = cvtest.pickMyColor()
+        print("Output " + str(sides[i]))
+        print('--------------------------------')
+
+    blue, orange, aqua, black, white, yellow = sides
+    
 
 # Scrambles the cube randomly, used for testing
 def scrambleCube(n):
@@ -639,12 +649,18 @@ def solveMyCube():
     return cubeDone()
 
 # Tests the algorithm 10000 random times
-for _ in range(10000):
-    scrambleCube(25) # Scrambles the cube
-    if solveMyCube() == False: # Solves the cube
-        print("Failed")
-        break
-    steps.clear()
+# averageStep = 0
+# for _ in range(10000):
+#     scrambleCube(25) # Scrambles the cube
+#     if solveMyCube() == False: # Solves the cube
+#         print("Failed")
+#         break
+#     averageStep += len(steps)
+#     steps.clear()
+# print("Average steps: " +str(averageStep/10000))
 
+# Solves the cube using a camera to set the cube
+setCube()
+solveMyCube()
 
 
