@@ -1,7 +1,6 @@
 import random
+# Imports a different Python file for the camera detection
 import cvtest
-# step 7: R U R' F' SPICY R' F R2 U' R', yellow top 
-# step 8: M2 U' M' U'2 M U' M2
 
 # Array to hold the current colors on the different sides
 # Options are: (Y)ellow,(B)lue,(W)hite,(O)range,(Bl)ack,(A)qua
@@ -21,6 +20,11 @@ aqua = ['A','A','A','A','A','A','A','A','A']
 # Array to hold the steps taken to solve the cube
 steps = []
 # Format: Move: (F)ront / (T)op
+# Example with the move F on the blue face -> F:B
+
+# ---------------------------
+# Couple Logistical Functions
+# ---------------------------
 
 # Function to set the cubes arrays
 # Use a camera to detect the colors of the Rubiks cube
@@ -46,6 +50,18 @@ def scrambleCube(n):
         F(random.choice(sides))
         D(random.choice(tops))
 
+# Tests the algorithm n random times
+def randomTest(n):
+    averageStep = 0
+    for _ in range(n):
+        scrambleCube(25) # Scrambles the cube
+        if solveMyCube() == False: # Solves the cube
+            print("Failed")
+            break
+        averageStep += len(steps)
+        steps.clear()
+    print("Average steps: " +str(averageStep/n))
+
 # Neatly prints one side, used for troubleshooting
 def printSide(list):
     print(list[0] + " " + list[1] + " " + list[2])
@@ -60,6 +76,15 @@ def printAll():
         print(sidesNames[i])
         printSide(sides[i])
     print('--------------------------------')
+
+# Sets a cube using a camera then solves it
+def solveThisCube():
+    setCube()
+    solveMyCube()
+
+# --------------------------------------------------------------
+# The following are all helper functions used by other functions
+# --------------------------------------------------------------
 
 # Returns the color to the right
 def nextSide(color, thisTop):
@@ -283,11 +308,33 @@ def cubeDone():
         if all(i == curColor[4] for i in curColor) == False:
             return False
     return True
+
+# Function that cleans up the steps
+# If it sees 4 consecutive steps that are the same it deletes them
+# If it sees 3 consecutive steps that are the same it turns it into a prime version of the step
+def cleanUpSteps():
+    global steps
+    for i in range(len(steps) - 3):
+        if steps[i] == "":
+            continue
+        # All 4 steps are equal
+        elif steps[i] == steps[i+1] == steps[i+2] == steps[i+3]:
+            steps[i] = ""
+            steps[i+1] = ""
+            steps[i+2] = ""
+            steps[i+3] = ""
+        # First 3 steps are equal
+        elif steps[i] == steps[i+1] == steps[i+2]:
+            steps[i] = steps[i][0] + "'" + steps[i][1:]
+            steps[i+1] = ""
+            steps[i+2] = ""
+    steps = list(filter(None, steps))
     
+# -----------------------------------------------------------------------------------
+# Following functions are all Rubix cube moves, a png is provided to provide a visual
+# -----------------------------------------------------------------------------------
 
-#Following functions are all Rubix cube moves, a png is provided to provide a visual
-
-#Clockwise turn of bottom side
+# Clockwise turn of bottom side
 def D(bottom):
     #Rotates bottom side
     bottom[:] = [bottom[6], bottom[3], bottom[0], 
@@ -444,9 +491,11 @@ def lSpicy(front, top):
     UPrime(top)
     R(oppositeSide,top)
     U(top)
-    
+
+# --------------------------------------------------------------------------------
 # The following functions are all the steps needed to solve the cube
 # They are in order, they assume that the previous function has been ran correctly
+# --------------------------------------------------------------------------------
 
 # Yellow daisy
 def yellowDaisy():
@@ -645,22 +694,17 @@ def solveMyCube():
     solveAll()
     print("Done solved all")
     print(cubeDone())
+    cleanUpSteps()
     print("Number of steps:" + str(len(steps)))
     return cubeDone()
 
-# Tests the algorithm 10000 random times
-# averageStep = 0
-# for _ in range(10000):
-#     scrambleCube(25) # Scrambles the cube
-#     if solveMyCube() == False: # Solves the cube
-#         print("Failed")
-#         break
-#     averageStep += len(steps)
-#     steps.clear()
-# print("Average steps: " +str(averageStep/10000))
-
-# Solves the cube using a camera to set the cube
-setCube()
-solveMyCube()
-
-
+# Little bit of User Input for the program
+x = input("Welcome to my Rubiks Cube solver, it uses the beginner method to solve the cube!\n\n" \
+"Would you like to have the program solve your cube using a camera to detect the colors or randomly simulate n amount of cubes solved?\n" \
+"Type C for camera or R to randomly test the cube\n")
+if x.lower() == "c":
+    solveThisCube()
+elif x.lower() == "r":
+    randomTest(int(input("How many cubes do you want to solve?")))
+else:
+    print("That wasn't an option...")
