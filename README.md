@@ -7,6 +7,7 @@ Further features to do:
 Further Improvements to the project:
 - Utilizle Computer Vision better
   - Currently, the cube has to be in a fixed position. I would like to make the computer detect the edges of the cube and read the colors from there
+  - Have a mode to set the colors of the cube, so depending on the lighting or different cubes, you can still utilize the program
 - Test the code further
   - Tested with randomized testing by making a function that randomizes the cube. Would run the code 10,000 times in a row with no errors
   - Would like to do further unit testing
@@ -20,4 +21,5 @@ Further Improvements to the project:
   - Skip steps like Yellow Daisy / Switch algorithm to non-beginner algorithm
 - Add more error catching, if the input is invalid, it continuously tries to solve the impossible cube
 - Make the steps print out in a more legible way
+
 
